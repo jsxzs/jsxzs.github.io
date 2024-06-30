@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Segment Any 4D Gaussians">
+    <meta name="keywords" content="Gaussians, Dynamic, Segmentation, Editing">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Segment Any 4D Gaussians</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-PYVRSFMDRL');
+    </script>
+
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <link rel="icon" href="./static/images/hust.png">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/index.js"></script>
+    <!-- <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            inlineMath: [['\\(','\\)'], ['$', '$']]
+          }
+        });
+      </script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+        <!-- <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+                <a class="navbar-item" href="https://guanjunwu.github.io">
+                    <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+                </a>
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+          More Research
+        </a>
+                    <div class="navbar-dropdown">
+
+                        <a class="navbar-item" href="https://jaminfong.cn/neusample/">
+            NeuSample
+          </a>
+                        <a class="navbar-item" href="https://jaminfong.cn/tineuvox/">
+            TiNeuVox
+          </a>
+                        <a class="navbar-item" href="https://taoranyi.com/gneuvox/">
+            GNeuVox
+           </a>
+                        <a class="navbar-item" href="https://jumpat.github.io/SA3D/">
+            Segment Anything in 3D with NeRFs
+          </a>
+                        <a class="navbar-item" href="https://guanjunwu.github.io/HDR-HexPlane/">
+            HDR-HexPlane
+          </a>
+                        <a class="navbar-item" href="https://taoranyi.com/gaussiandreamer/">
+            GaussianDreamer
+          </a>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </nav> -->
+      
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container is-max-desktop">
+                <div class="columns is-centered">
+                    <div class="column has-text-centered">
+                        <h1 class="title is-1 publication-title">Segment Any 4D Gaussians</h1>
+
+                        <div class="is-size-5 publication-authors">
+                            <span class="author-block">
+                        <a href="https://github.com/jsxzs">Shengxiang Ji</a><sup>1*</sup>,</span>
+                        <span class="author-block">
+                            <a href="https://guanjunwu.github.io">Guanjun Wu</a><sup>1*</sup>,</span>
+                        </span>
+                        <span class="author-block">
+                            <a href="https://jaminfong.cn">Jiemin Fang</a><sup>2‡</sup>,
+                        </span>
+                        <span class="author-block">
+                            <a href="https://jumpat.github.io/SA3D/">Jiazhong Cen</a><sup>3</sup>,
+                        </span>
+                        <p></p>
+                        <span class="author-block">
+                            <a href="https://taoranyi.github.io">Taoran Yi</a><sup>1</sup>,</span>
+                        </span>
+                        <span class="author-block">
+                            <a href="http://eic.hust.edu.cn/professor/liuwenyu/">Wenyu Liu</a><sup>1</sup>,
+                        </span>
+                        <span class="author-block">
+                            <a href="https://www.qitian1987.com/">Tian Qi</a><sup>3</sup>,
+                        </span>
+                        <span class="author-block">
+                            <a href="https://xwcv.github.io/">Xinggang Wang</a><sup>1✉</sup>
+                        </span>
+
+                        </div>
+
+                        <div class="is-size-5 publication-authors">
+                            <span class="author-block"><sup>1</sup>Huazhong University of Science and Technology</span>
+                            <p></p>
+                            <span class="author-block"><sup>2</sup>Huawei Inc.</span>
+                            <span class="author-block"><sup>2</sup>Shanghai Jiao Tong University</span>
+                            <p></p>
+                            <span class="author-block"><sup>*</sup>Equal Contributions.</span>
+                            <span class="author-block"><sup>‡</sup>Project Lead.</span>
+                            <span class="author-block"><sup>✉</sup>Corresponding Authors.</span>
+
+                        </div>
+                        <div class="column has-text-centered">
+                            <div class="publication-links">
+                                <!-- PDF Link. -->
+                                <span class="link-block">
+                <a href="https://arxiv.org/pdf/2310.08528v2.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                                <span>Paper</span>
+                                </a>
+                                </span>
+                                <span class="link-block">
+                <a href="https://arxiv.org/abs/2310.08528"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                                <span>arXiv</span>
+                                </a>
+                                </span>
+                                <!-- Video Link. -->
+                                <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+                                <!-- Code Link. -->
+                                <span class="link-block">
+                <a href="https://github.com/hustvl/4DGaussians"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                                <span>Code</span>
+                                </a>
+                                </span>
+                                <!-- Dataset Link. -->
+                                <!-- <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a> -->
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hero teaser">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered">
+                <div class="column is-full-width">
+                    <video id="teaser" autoplay muted loop playsinline height="300%">
+                    <source src="./static/videos/teaser.mp4" type="video/mp4">
+                    </video>
+                    <h2 class="subtitle has-text-centered">
+                        Given a pre-trained 4D Gaussians, SA4D can decompose the Gaussian at object level and supports removal/recoloring, object composition, and rendering anything masks.
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--Abstract. -->
+    <section class="section">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                    <h2 class="title is-3">Abstract</h2>
+                    <div class="content has-text-justified">
+                        <p>
+                            Modeling, understanding, and reconstructing the real world are crucial in XR/VR. Recently, 3D Gaussian Splatting (3D-GS) methods have shown remarkable success in modeling and understanding 3D scenes.
+                            Similarly, various 4D representations have demonstrated the ability to capture the dynamics of the 4D world. However, there is a dearth of research focusing on segmentation within 4D representations. 
+                            In this paper, we propose to Segment Any 4D Gaussians (SA4D), the first framework to segment anything in the 4D digital world based on 4D Gaussians. 
+                            In SA4D, an efficient temporal identity feature field is introduced to handle Gaussian drifting, with the potential to learn precise identity feature from noisy and sparse input. Additionally, a 4D segmentation refinement process is proposed to remove artifacts.
+                            Our SA4D achieves precise, high-quality segmentation within seconds in 4D Gaussians and shows the ability of removal, recoloring, composition and rendering high quality novel anything masks.
+                        </p>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </section>
+    <!--/ Abstract. -->
+
+    <!--Method. -->
+    <section class="section">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+                <h2 class="title is-3">Method</h2>
+            </div>
+            <br/>
+            <div class="columns is-centered">
+                <div class="column is-full-width">
+                    <!-- <h2 class="title is-3">Method</h2> -->
+                    <img src="./static/images/pipeline.png" class="interpolation-image" alt="Interpolation end reference image." />
+                    <div class="content has-text-justified">
+                        <!-- <p>
+                            Overview of our training pipeline. Given a timestamp `t` and canonical 3D Gaussians `\mathcal{G}`, the ID encoding `e` and deformed 3D Gaussians `\mathcal{G}^'` will be predicted by an optimizable temporal identity field network `\phi_{\theta}` and frozen deformation field network `\mathcal{F}`, respectively.
+                            Then the ID encoding `e` are splatted to `E`, then a convolutional classifier `\phi_c` is used to predict each pixel's ID `f` and the whole training pipeline is supervised by `I_{seg}` predicted by video tracker with `\mathcal{L}_{loss}`.
+                        </p> -->
+                        <p>
+                            Overview of our training pipeline. Given a timestamp $t$ and canonical 3D Gaussians $\mathcal{G}$, the ID encoding $e$ and deformed 3D Gaussians $\mathcal{G}^{'}$ will be predicted by an optimizable temporal identity field network $\phi_{\theta}$ and frozen deformation field network $\mathcal{F}$, respectively.
+                            Then the ID encoding $e$ are splatted to $E$, then a convolutional classifier $\phi_c$ is used to predict each pixel's ID $f$ and the whole training pipeline is supervised by $I_{seg}$ predicted by video tracker with $\mathcal{L}_{loss}$.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--\ Method. -->
+
+    <!-- HyperNerf. -->
+    <section class="hero is-light is-small">
+        <div class="hero-body">
+            <div class="container is-max-desktop">
+                <h2 class="title is-3">HyperNerf Dataset</h2>
+
+                <!-- Anything Mask Rendering. -->
+                <h3 class="title is-4">Anything Mask Rendering</h3>
+                <div class="container">
+                    <div id="results-carousel" class="carousel results-carousel">
+                        <div class="item item-fullbody">
+                            <video id="teaser" autoplay controls muted loop playsinline height="100%">
+                                <source src="./static/videos/split-cookie_mask.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item item-fullbody">
+                            <video id="teaser" autoplay controls muted loop playsinline height="100%">
+                                <source src="./static/videos/chickchicken_mask.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item item-fullbody">
+                            <video id="teaser" autoplay controls muted loop playsinline height="100%">
+                                <source src="./static/videos/torchocolate_mask.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item item-fullbody">
+                            <video id="teaser" autoplay controls muted loop playsinline height="100%">
+                                <source src="./static/videos/espresso_mask.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+                <!--/ Anything Mask Rendering. -->
+                
+                </br>
+
+                <!-- 4D Segmentation. -->
+                <h3 class="title is-4">4D Segmentation</h3>
+                <div class="container">
+                    <div id="results-carousel" class="carousel results-carousel">
+                        <div class="item item-fullbody">
+                            <video id="teaser" autoplay controls muted loop playsinline height="100%">
+                                <source src="./static/videos/split-cookie_seg.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item item-fullbody">
+                            <video id="teaser" autoplay controls muted loop playsinline height="100%">
+                                <source src="./static/videos/chickchicken_seg.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item item-fullbody">
+                            <video id="teaser" autoplay controls muted loop playsinline height="100%">
+                                <source src="./static/videos/torchocolate_seg.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item item-fullbody">
+                            <video id="teaser" autoplay controls muted loop playsinline height="100%">
+                                <source src="./static/videos/espresso_seg.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+                <!--/ 4D Segmentation. -->
+            </div>
+        </div>
+    </section>
+    <!--\ HyperNerf. -->
+
+    <!-- DyNerf. -->
+    <section class="section">
+        <div class="container is-max-desktop">
+            <h2 class="title is-3">Neu3D Dataset</h2>
+
+            <!-- Anything Mask Rendering. -->
+            <h3 class="title is-4">Fixed View Anything Mask Rendering</h3>
+            <div class="columns is-centered">
+                <div class="column">
+                    <div class="content">
+                        <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/cut_roasted_beef_mask.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="content">
+                        <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/coffee_martini_mask.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+            <!--\ Anything Mask Rendering. -->
+
+            <!-- 4D Segmentation. -->
+            <h3 class="title is-4">4D Segmentation</h3>
+            <div class="columns is-centered">
+                <div class="column">
+                    <div class="content">
+                        <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/cut_roasted_beef_seg.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="content">
+                        <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/coffee_martini_seg.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+            <!--\ 4D Segmentation -->
+        </div>
+    </section>
+    <!--\ DyNerf -->
+
+    <!-- Dynamic Scene Editing. -->
+    <section class="section">
+        <div class="container is-max-desktop">
+            <h2 class="title is-3">Dynamic Scene Editing</h2>
+            <div class="container">
+                <div id="results-carousel" class="carousel results-carousel">
+                    <div class="item item-fullbody">
+                        <video id="teaser" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/composite_2.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item item-fullbody">
+                        <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/composite_3.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item item-fullbody">
+                        <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/composite_4.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item item-fullbody">
+                        <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/duplicate_cookie.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item item-fullbody">
+                        <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/del_americano.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--/ Dynamic Scene Editing. -->
+
+
+    <!-- <section class="section" id="BibTeX">
+        <div class="container is-max-desktop content">
+            <h2 class="title">Acknowledgement</h2>
+            <p>
+                We would like to express our sincere gratitude to <a href="https://github.com/zhouzhenghong-gt">Zhenghong Zhou</a> for his revisions to our code and discussions on the content of our paper.
+            </p>
+        </div>
+    </section>
+ -->
+    <section class="section" id="BibTeX">
+        <div class="container is-max-desktop content">
+            <h2 class="title">BibTeX</h2>
+            <pre><code>@article{wu20234dgaussians,
+            title={4D Gaussian Splatting for Real-Time Dynamic Scene Rendering},
+            author={Wu, Guanjun and Yi, Taoran and Fang, Jiemin and Xie, Lingxi and Zhang, Xiaopeng and Wei Wei and Liu, Wenyu and Tian, Qi and Wang Xinggang},
+            journal={arXiv preprint arXiv:2310.08528},
+            year={2023}
+            }</code></pre>
+        </div>
+
+    </section>
+            <footer class="footer">
+                <div class="container">
+                    <div class="content has-text-centered">
+                        <a class="icon-link" href="https://arxiv.org/abs/2310.08528">
+                            <i class="fas fa-file-pdf"></i>
+                        </a>
+                        <a class="icon-link" href="https://github.com/jsxzs" class="external-link" disabled>
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                    <div class="columns is-centered">
+                        <div class="column is-8">
+                            <div class="content">
+                                <p>
+                                    This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+                                </p>
+                                <p>
+                                    The souce code is borrowed from <a href="https://github.com/hustvl/4DGaussians">nerfies</a>, We thank the authors for sharing the templates.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+</body>
+
+</html>
