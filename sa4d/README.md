@@ -1,4 +1,4 @@
-# Segment Any 4D Gaussians
+# Segment Any 4D gaussians
 
 This is the repository that contains source code for the [Nerfies website](https://nerfies.github.io).
 
