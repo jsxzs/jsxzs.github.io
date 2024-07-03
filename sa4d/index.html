@@ -248,7 +248,11 @@
             <div class="columns is-centered">
                 <div class="column is-full-width">
                     <!-- <h2 class="title is-3">Method</h2> -->
-                    <img src="./static/images/pipeline.png" class="interpolation-image" alt="Interpolation end reference image." />
+                    <!-- <img src="./static/images/pipeline.png" class="interpolation-image" alt="Interpolation end reference image." /> -->
+                    <!-- <img src="./static/videos/pipeline.gif" class="interpolation-image" alt="GIF Image" /> -->
+                    <video id="teaser" autoplay controls muted loop playsinline height="200%">
+                        <source src="./static/videos/pipeline.mp4" type="video/mp4">
+                    </video>
                     <div class="content has-text-justified">
                         <!-- <p>
                             Overview of our training pipeline. Given a timestamp `t` and canonical 3D Gaussians `\mathcal{G}`, the ID encoding `e` and deformed 3D Gaussians `\mathcal{G}^'` will be predicted by an optimizable temporal identity field network `\phi_{\theta}` and frozen deformation field network `\mathcal{F}`, respectively.
@@ -390,6 +394,11 @@
                     <div class="item item-fullbody">
                         <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
                             <source src="./static/videos/duplicate_cookie.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item item-fullbody">
+                        <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/playroom_test.mp4" type="video/mp4">
                         </video>
                     </div>
                     <div class="item item-fullbody">
