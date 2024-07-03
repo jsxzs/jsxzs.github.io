@@ -2,7 +2,6 @@ body {
   font-family: 'Noto Sans', sans-serif;
 }
 
-
 .footer .icon-link {
     font-size: 25px;
     color: #000;
@@ -122,11 +121,6 @@ body {
   padding: 0;
   font-size: 0;
 }
-
-.results-carousel video {
-  margin: 0;
-}
-
 
 .interpolation-panel {
   background: #ffffff;
