@@ -22,7 +22,7 @@
         @media (max-width: 1023px) { .container { padding-left: 12px; padding-right: 12px; } }
         .publication-authors .author-block { display: inline-block; }
         .publication-links .button[disabled] { opacity: .55; cursor: default; }
-        .tldr { margin: 0 auto 1.2rem; font-size: 1.5rem; line-height: 1.35; color: #363636; text-align: left; }
+        .tldr { max-width: 960px; margin: 0 auto 1.2rem; font-size: 1.5rem; line-height: 1.35; color: #363636; text-align: left; }
         .tldr-label { display: inline-block; font-weight: 600; font-size: 1.5rem; line-height: 1.35; color: #363636; margin-right: .5rem; }
         .figure-caption { color: #4a4a4a; font-size: 0.95rem; line-height: 1.55; margin-top: .6rem; }
         .figure-caption b { color: #363636; }
@@ -100,6 +100,7 @@
         .vd-thumb.on img, .vd-thumb:hover img { opacity: 1; }
         .vd-tnum { position: absolute; left: 4px; top: 4px; font-size: .66rem; line-height: 1; padding: 2px 5px; border-radius: 3px; background: rgba(24,21,17,.75); color: #f5f2ea; font-variant-numeric: tabular-nums; }
         .ui-video { width: 100%; max-height: 78vh; background: #000; border-radius: 6px; display: block; }
+        .ui-video.overview { max-height: none; }   /* the TL;DR video: full container width, never letterboxed */
     </style>
 </head>
 
@@ -132,7 +133,7 @@
                             <span class="author-block"><sup>4</sup>Amazon</span>
                             <span class="author-block"><sup>5</sup>Lambda</span>
                         </div>
-                        <div class="is-size-6 publication-authors" style="margin-top: .2rem;">
+                        <div class="is-size-5 publication-authors" style="margin-top: .2rem;">
                             <span class="author-block"><sup>&#8224;</sup>Corresponding author</span>
                         </div>
                         <div class="column has-text-centered">
@@ -169,38 +170,21 @@
         </div>
     </section>
 
-    <!-- Interactive interface -->
+    <!-- TL;DR -->
     <section class="section" style="padding-top: 0.5rem;">
-        <div class="container is-max-desktop">
+        <div class="container is-max-widescreen">
             <div class="columns is-centered has-text-centered">
                 <div class="column is-full-width">
                     <!-- <p class="tldr">We present <b>LIFT</b>, a unified video generation framework that complements camera control with future-layout control, enabling users to specify what should appear in a future view and where it should appear.</p> -->
                     <p class="tldr"><span class="tldr-label">TL;DR</span> We present <b>LIFT</b>, a unified video generation framework that complements camera control with future-layout control under large viewpoint changes using on-policy self-distillation.</p>
-                    <video class="ui-video" autoplay loop controls muted playsinline preload="auto" poster="./static/images/ui_poster.jpg" src="./static/videos/ui_demo.mp4"></video>
-                    <p class="figure-caption tldr-caption has-text-justified">
-                        Given a first frame, the user navigates from the first-frame view along a desired camera path and specifies the layout of the <b>final frame</b> with bounding boxes and local text prompts.
-                        <b>LIFT</b> then generates the intended shot: it transitions from the input image to the user-defined last-frame layout while following the prescribed camera trajectory, even when the camera reveals regions that are not visible in the first frame.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Teaser figure -->
-    <section class="hero teaser">
-        <div class="container is-max-desktop">
-            <div class="columns is-centered">
-                <div class="column is-full-width">
-                    <figure class="paper-figure">
-                        <img src="./static/images/teaser.jpg" alt="Teaser: from a first frame, a camera path and a last-frame layout, LIFT generates the shot that reveals the specified objects.">
-                    </figure>
+                    <video class="ui-video overview" autoplay loop controls muted playsinline preload="auto" poster="./static/images/overview_poster.jpg" src="./static/videos/overview.mp4"></video>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Abstract -->
-    <section class="section">
+    <section class="section" style="padding-top: 1rem;">
         <div class="container is-max-desktop">
             <div class="columns is-centered has-text-centered">
                 <div class="column is-four-fifths">
@@ -217,6 +201,23 @@
                             Experiments show that LIFT improves video quality, future-layout controllability, and camera controllability over other methods.
                         </p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Teaser figure -->
+    <section class="section teaser" style="padding-top: 0;">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered">
+                <div class="column is-full-width">
+                    <figure class="paper-figure">
+                        <img src="./static/images/teaser.jpg" alt="Teaser: from a first frame, a camera path and a last-frame layout, LIFT generates the shot that reveals the specified objects.">
+                    </figure>
+                    <p class="figure-caption tldr-caption has-text-justified">
+                        Given a first frame, the user navigates from the first-frame view along a desired camera path and specifies the layout of the <b>final frame</b> with bounding boxes and local text prompts.
+                        <b>LIFT</b> then generates the intended shot: it transitions from the input image to the user-defined last-frame layout while following the prescribed camera trajectory, even when the camera reveals regions that are not visible in the first frame.
+                    </p>
                 </div>
             </div>
         </div>
@@ -324,6 +325,18 @@
                         <div class="vd-thumbview" id="vd-thumbview"><div class="vd-thumbs" id="vd-thumbs"></div></div>
                         <button class="vd-tnav next" id="vd-tnext" type="button" aria-label="next thumbnails">&#8250;</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User interface -->
+    <section class="section">
+        <div class="container is-max-widescreen">
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-full-width">
+                    <h2 class="title is-3">User Interface</h2>
+                    <video class="ui-video" data-play-visible loop controls muted playsinline preload="metadata" poster="./static/images/ui_poster.jpg" src="./static/videos/ui_demo.mp4"></video>
                 </div>
             </div>
         </div>
@@ -531,6 +544,15 @@
             }
         }
         requestAnimationFrame(paint);
+    })();
+    </script>
+    <script>
+    // videos further down the page play (muted) while they are on screen and pause when they leave it
+    (function () {
+        const vids = document.querySelectorAll("video[data-play-visible]");
+        if (!("IntersectionObserver" in window)) { vids.forEach(v => v.play().catch(() => {})); return; }
+        const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause()), { threshold: 0.3 });
+        vids.forEach(v => io.observe(v));
     })();
     </script>
 </body>
