@@ -426,15 +426,20 @@
             EX.push(x);
         });
 
-        let cur = 0, inView = false, tpage = 0;
+        let cur = 0, inView = false, tpage = 0, followed = -1;
         const perPage = () => thumbview.clientWidth >= 900 ? 10 : 6;
         function layoutThumbs(follow) {
             // desktop: a fixed number of thumbnails per page; the strip's own arrows page it, and it jumps to the page
             // of the current example whenever the example changes. Phones: a scrollable rail with fixed-size thumbnails.
             const W = thumbview.clientWidth; if (!W) return;
+            follow = follow && followed !== cur;                               // follow only when the example changed
+            if (follow) followed = cur;
             if (window.innerWidth <= 700) {
                 thumbs.style.removeProperty("--tw"); thumbs.style.transform = "";
-                if (follow) EX[cur].thumb.scrollIntoView({ block: "nearest", inline: "nearest" });
+                if (follow) {                                                  // scroll the rail itself, never the page
+                    const r = EX[cur].thumb.getBoundingClientRect(), v = thumbview.getBoundingClientRect();
+                    if (r.left < v.left || r.right > v.right) thumbview.scrollBy({ left: (r.left + r.width / 2) - (v.left + v.width / 2), behavior: "smooth" });
+                }
                 tprev.disabled = thumbview.scrollLeft <= 0; tnext.disabled = thumbview.scrollLeft + W >= thumbview.scrollWidth - 1;
                 return;
             }
@@ -468,7 +473,7 @@
         }
         prevBtn.addEventListener("click", () => go(cur - 1));
         nextBtn.addEventListener("click", () => go(cur + 1));
-        addEventListener("resize", () => layoutThumbs(true));
+        addEventListener("resize", () => layoutThumbs(false));              // phones resize while scrolling (address bar)
         document.addEventListener("keydown", e => {
             if (!inView || ["INPUT", "TEXTAREA", "SELECT", "BUTTON", "SUMMARY"].includes(e.target.tagName)) return;
             if (e.key === "ArrowLeft") { go(cur - 1); e.preventDefault(); } else if (e.key === "ArrowRight") { go(cur + 1); e.preventDefault(); }
